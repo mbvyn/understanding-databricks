@@ -1,0 +1,9 @@
+# Copy this file to databricks.local.yml and put your own workspace URL in it.
+# databricks.local.yml is git-ignored, so your workspace never ends up in the repo.
+targets:
+  dev:
+    workspace:
+      host: https://<your-workspace>.cloud.databricks.com
+  prod:
+    workspace:
+      host: https://<your-workspace>.cloud.databricks.com
