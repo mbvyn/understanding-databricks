@@ -1,0 +1,65 @@
+# Bronze layer, imperative style: one task per source, all independent, so they run in parallel.
+
+resources:
+  jobs:
+    bronze_ingestion:
+      name: bronze_ingestion
+
+      tasks:
+        - task_key: bronze_orders
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: bronze
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}", "--source", "orders"]
+          environment_key: default
+          # Auto Loader stops the stream when it meets a new column (addNewColumns), then picks it up
+          # on restart. One automatic retry turns that into a non-event.
+          max_retries: 1
+          min_retry_interval_millis: 10000
+
+        - task_key: bronze_customers
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: bronze
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}", "--source", "customers"]
+          environment_key: default
+          max_retries: 1
+
+        - task_key: bronze_payments
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: bronze
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}", "--source", "payments"]
+          environment_key: default
+          max_retries: 1
+
+        - task_key: bronze_clicks
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: bronze
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}", "--source", "clicks"]
+          environment_key: default
+          max_retries: 1
+
+        - task_key: bronze_products
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: bronze
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}", "--source", "products"]
+          environment_key: default
+
+        - task_key: bronze_rates
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: bronze
+            parameters: ["--catalog", "${var.catalog}", "--schema", "${var.schema}", "--source", "rates", "--rates-mode", "${var.rates_mode}"]
+          environment_key: default
+          max_retries: 2
+          min_retry_interval_millis: 30000
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - ../dist/*.whl

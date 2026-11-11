@@ -22,6 +22,8 @@ dev = [
 
 [project.scripts]
 main = "understanding_databricks.main:main"
+generate = "understanding_databricks.generator:main"
+bronze = "understanding_databricks.bronze:main"
 
 [build-system]
 requires = ["hatchling"]

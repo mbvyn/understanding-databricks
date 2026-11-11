@@ -1,0 +1,28 @@
+# Simulates the outside world: every run drops one new batch of files for all sources into the
+# landing volume. It is NOT part of the pipeline; in real life these files come from other systems.
+
+resources:
+  jobs:
+    data_generator:
+      name: data_generator
+
+      tasks:
+        - task_key: generate
+          python_wheel_task:
+            package_name: understanding_databricks
+            entry_point: generate
+            parameters:
+              - "--catalog"
+              - "${var.catalog}"
+              - "--schema"
+              - "${var.schema}"
+              - "--orders"
+              - "${var.orders_per_batch}"
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            environment_version: "5"
+            dependencies:
+              - ../dist/*.whl

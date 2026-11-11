@@ -20,6 +20,12 @@ variables:
     description: The catalog to use
   schema:
     description: The schema to use
+  orders_per_batch:
+    description: Orders the data generator writes per run (clicks = 5x)
+    default: 100000
+  rates_mode:
+    description: Where Bronze gets exchange rates - "api" (Frankfurter) or "file" (generator fallback)
+    default: api
 
 targets:
   dev:
